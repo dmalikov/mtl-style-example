@@ -17,6 +17,7 @@ default-extensions:
 - GeneralizedNewtypeDeriving
 - LambdaCase
 - OverloadedStrings
+- ScopedTypeVariables
 
 library:
   dependencies:
@@ -24,6 +25,7 @@ library:
   - monad-logger
   - monad-time
   - mtl
+  - safe-exceptions
   - text
   - time
   - transformers

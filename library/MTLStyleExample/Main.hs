@@ -7,6 +7,7 @@ import qualified Data.Text as T
 
 import Prelude hiding (readFile)
 
+import Control.Exception.Safe (MonadThrow)
 import Control.Monad.Time (MonadTime(..))
 import Control.Monad.Logger (LoggingT, MonadLogger(..), logInfoN, runStderrLoggingT)
 import Data.Semigroup ((<>))
@@ -19,7 +20,7 @@ import MTLStyleExample.Interfaces
 
 newtype AppM a = AppM (LoggingT IO a)
   deriving ( Functor, Applicative, Monad
-           , MonadArguments, MonadFileSystem, MonadLogger, MonadTime )
+           , MonadArguments, MonadFileSystem, MonadLogger, MonadTime, MonadThrow )
 
 runAppM :: AppM a -> IO a
 runAppM (AppM x) = runStderrLoggingT x
@@ -30,7 +31,7 @@ mainIO = runAppM main
 --------------------------------------------------------------------------------
 -- Logic
 
-main :: (MonadArguments m, MonadFileSystem m, MonadLogger m, MonadTime m) => m ()
+main :: (MonadArguments m, MonadFileSystem m, MonadLogger m, MonadTime m, MonadThrow m ) => m ()
 main = do
   startTime <- currentTime
   [fileName] <- getArgs

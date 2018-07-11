@@ -1,5 +1,6 @@
 module MTLStyleExample.MainSpec where
 
+import Data.ByteString (ByteString)
 import Data.Function ((&))
 import Data.Functor.Identity (runIdentity)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
@@ -11,7 +12,7 @@ import MTLStyleExample.Test.Stubs
 spec :: Spec
 spec = describe "main" $ do
   let epoch = posixSecondsToUTCTime 0
-      ((), logMessages) = runIdentity $ main
+      Right ((), logMessages) = main
         & runArgumentsT ["sample.txt"]
         & runFileSystemT [("sample.txt", "Alyssa")]
         & runLoggerT
