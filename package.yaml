@@ -54,6 +54,7 @@ tests:
     - monad-time
     - mtl
     - mtl-style-example
+    - safe-exceptions
     - text
     - time
     - transformers

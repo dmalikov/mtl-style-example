@@ -2,6 +2,7 @@ module MTLStyleExample.Test.Stubs where
 
 import qualified Data.Text as T
 
+import Control.Exception.Safe (MonadThrow)
 import Control.Monad.Reader (ReaderT(..), ask)
 import Control.Monad.State (StateT, evalStateT, get, put)
 import Control.Monad.Writer (WriterT(..), tell)
@@ -20,7 +21,7 @@ import MTLStyleExample.Interfaces
 
 newtype ArgumentsT m a = ArgumentsT (ReaderT [Text] m a)
   deriving ( Functor, Applicative, Monad, MonadTrans
-           , MonadFileSystem, MonadLogger, MonadTime )
+           , MonadFileSystem, MonadLogger, MonadTime, MonadThrow )
 
 -- | Runs a computation with access to a set of command-line arguments.
 runArgumentsT :: [Text] -> ArgumentsT m a -> m a
@@ -34,7 +35,7 @@ instance Monad m => MonadArguments (ArgumentsT m) where
 
 newtype FileSystemT m a = FileSystemT (ReaderT [(Text, Text)] m a)
   deriving ( Functor, Applicative, Monad, MonadTrans
-           , MonadArguments, MonadLogger, MonadTime )
+           , MonadArguments, MonadLogger, MonadTime, MonadThrow )
 
 -- | Runs a computation that may interact with the file system, given a mapping
 -- from file paths to file contents.
@@ -51,7 +52,7 @@ instance Monad m => MonadFileSystem (FileSystemT m) where
 
 newtype LoggerT m a = LoggerT (WriterT [ByteString] m a)
   deriving ( Functor, Applicative, Monad, MonadTrans
-           , MonadArguments, MonadFileSystem, MonadTime )
+           , MonadArguments, MonadFileSystem, MonadTime, MonadThrow )
 
 -- | Runs a computation that may emit log messages, returning the result of the
 -- computation combined with the set of messages logged, in order.
@@ -72,7 +73,7 @@ data ClockState
 
 newtype ClockT m a = ClockT (StateT ClockState m a)
   deriving ( Functor, Applicative, Monad, MonadTrans
-           , MonadArguments, MonadFileSystem, MonadLogger )
+           , MonadArguments, MonadFileSystem, MonadLogger, MonadThrow )
 
 -- | Runs a computation with a constant time that never changes.
 runStoppedClockT :: Monad m => UTCTime -> ClockT m a -> m a
